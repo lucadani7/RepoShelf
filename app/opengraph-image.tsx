@@ -1,8 +1,8 @@
 import { ImageResponse } from "next/og";
-import { OWNER } from "@/lib/site";
+import { OWNER, TAGLINE } from "@/lib/site";
 
 // The preview image shown when a RepoShelf link is shared (WhatsApp, Discord, LinkedIn, X…)
-export const alt = "RepoShelf — hand-picked GitHub repositories";
+export const alt = `RepoShelf — projects by ${OWNER.name}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -55,7 +55,7 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 104, fontWeight: 700, letterSpacing: -4 }}>RepoShelf</div>
           <div style={{ fontSize: 44, color: "#6e6e73", marginTop: 12 }}>
-            Hand-picked GitHub repositories, worth a look.
+            {TAGLINE}
           </div>
         </div>
 

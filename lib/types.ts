@@ -8,6 +8,8 @@ export type Repo = {
   note: string | null;
   framework: string | null;
   tags: string[];
+  /** Picked by the owner for the big card on the home page */
+  featured: boolean;
   description: string | null;
   homepage: string | null;
   stars: number;

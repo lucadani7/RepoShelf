@@ -5,6 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteNav from "@/components/SiteNav";
 import TagRepos from "@/components/TagRepos";
 import { getRepos } from "@/lib/repos";
+import { OWNER } from "@/lib/site";
 import { countTags, tagHref, tagLabel } from "@/lib/tags";
 
 type Params = Promise<{ tag: string }>;
@@ -28,8 +29,8 @@ function decodeTag(raw: string): string {
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const tag = decodeTag((await params).tag);
   return {
-    title: `${tagLabel(tag)} repos — RepoShelf`,
-    description: `Hand-picked GitHub repositories tagged “${tag}”.`,
+    title: `${tagLabel(tag)} projects — RepoShelf`,
+    description: `${OWNER.name}'s open-source projects tagged “${tag}”.`,
   };
 }
 
@@ -56,7 +57,7 @@ export default async function TagPage({ params }: { params: Params }) {
             {tagLabel(tag)}
           </h1>
           <p className="mt-3 text-xl text-muted">
-            {repos.length} {repos.length === 1 ? "repository" : "repositories"} tagged “{tag}”.
+            {repos.length} {repos.length === 1 ? "project" : "projects"} tagged “{tag}”.
           </p>
 
           {related.length > 0 && (

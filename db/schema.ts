@@ -13,6 +13,8 @@ export const repo = pgTable("repo", {
   note: text("note"),
   framework: text("framework"),
   tags: text("tags").array().notNull().default([]),
+  /** Shown in the big card at the top of the home page (only one at a time) */
+  featured: boolean("featured").notNull().default(false),
 
   // Copied from GitHub, refreshed periodically
   description: text("description"),

@@ -1,3 +1,4 @@
+import RepoAvatar from "@/components/RepoAvatar";
 import { compactNumber, languageColor } from "@/lib/languages";
 import type { Repo } from "@/lib/types";
 
@@ -11,19 +12,7 @@ export default function ShelfCard({ repo }: { repo: Repo }) {
       className="group flex h-full w-[17.5rem] shrink-0 snap-start flex-col rounded-3xl bg-surface p-5 shadow-soft transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lifted sm:w-[19rem]"
     >
       <div className="flex items-center gap-3">
-        {repo.avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={`${repo.avatarUrl}${repo.avatarUrl.includes("?") ? "&" : "?"}s=96`}
-            alt=""
-            width={48}
-            height={48}
-            loading="lazy"
-            className="h-12 w-12 shrink-0 rounded-2xl ring-1 ring-ink/5"
-          />
-        ) : (
-          <div className="h-12 w-12 shrink-0 rounded-2xl bg-canvas" />
-        )}
+        <RepoAvatar repo={repo} size={48} />
         <div className="min-w-0">
           <p className="truncate font-semibold text-ink">{repo.name}</p>
           <p className="truncate text-sm text-muted">{repo.owner}</p>
@@ -44,7 +33,7 @@ export default function ShelfCard({ repo }: { repo: Repo }) {
             {repo.language}
           </span>
         )}
-        <span className="ml-auto">★ {compactNumber.format(repo.stars)}</span>
+        {repo.stars > 0 && <span className="ml-auto">★ {compactNumber.format(repo.stars)}</span>}
       </div>
     </a>
   );

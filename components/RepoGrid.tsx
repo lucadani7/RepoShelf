@@ -93,8 +93,8 @@ export default function RepoGrid({
           type="search"
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
-          placeholder="Search repos, notes, languages, topics"
-          aria-label="Search repositories"
+          placeholder="Search projects, languages, topics"
+          aria-label="Search projects"
           className="h-12 w-full rounded-full bg-surface pr-5 pl-12 text-base text-ink shadow-soft ring-1 ring-ink/5 transition placeholder:text-faint focus:ring-2 focus:ring-accent/40 focus:outline-none"
         />
       </div>
@@ -133,7 +133,7 @@ export default function RepoGrid({
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
-          aria-label="Sort repositories"
+          aria-label="Sort projects"
           className={pillSelect}
           style={chevron}
         >
@@ -146,7 +146,7 @@ export default function RepoGrid({
       </div>
 
       <p className="mt-8 mb-4 text-sm text-faint">
-        {visible.length} {visible.length === 1 ? "repository" : "repositories"}
+        {visible.length} {visible.length === 1 ? "project" : "projects"}
       </p>
 
       {visible.length > 0 ? (
@@ -156,7 +156,7 @@ export default function RepoGrid({
           ))}
         </div>
       ) : (
-        <p className="py-16 text-center text-lg text-muted">Nothing on the shelf matches that.</p>
+        <p className="py-16 text-center text-lg text-muted">No project matches that.</p>
       )}
     </section>
   );

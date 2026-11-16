@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import RepoGrid from "@/components/RepoGrid";
 import SiteFooter from "@/components/SiteFooter";
 import SiteNav from "@/components/SiteNav";
-import { OWNER } from "@/lib/site";
+import { OWNER, TAGLINE } from "@/lib/site";
 import { tagHref, tagLabel } from "@/lib/tags";
 import type { Repo } from "@/lib/types";
 import FeaturedCard from "./FeaturedCard";
@@ -22,8 +22,10 @@ export default function ShelfPage({ repos }: { repos: Repo[] }) {
   const browseRef = useRef<HTMLElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  // Newest first (repos already come sorted that way from the database)
-  const [featured, ...rest] = repos;
+  // The repo you picked in /admin; otherwise the newest one that has a description
+  // (repos already come newest-first from the database)
+  const featured = repos.find((r) => r.featured) ?? repos.find((r) => r.description) ?? repos[0];
+  const rest = repos.filter((r) => r !== featured);
 
   // One shelf per tag, most-used tags first
   const tagShelves = useMemo(() => {
@@ -50,13 +52,13 @@ export default function ShelfPage({ repos }: { repos: Repo[] }) {
       <main className="mx-auto max-w-6xl px-5 pb-16">
         <header className="pt-14 pb-10 sm:pt-20">
           <p className="text-sm font-medium text-muted">by {OWNER.name}</p>
-          <h1 className="mt-2 font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">Discover</h1>
-          <p className="mt-3 max-w-2xl text-xl text-muted">Hand-picked GitHub repositories, worth a look.</p>
+          <h1 className="mt-2 font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">Projects</h1>
+          <p className="mt-3 max-w-2xl text-xl text-muted">{TAGLINE}</p>
         </header>
 
         {repos.length === 0 ? (
           <p className="rounded-3xl bg-surface py-20 text-center text-lg text-muted shadow-soft">
-            The shelf is empty for now. Check back soon.
+            No projects here yet. Check back soon.
           </p>
         ) : (
           <>
@@ -74,7 +76,7 @@ export default function ShelfPage({ repos }: { repos: Repo[] }) {
             ))}
 
             <section ref={browseRef} id="browse" className="mt-16 scroll-mt-20 border-t border-ink/10 pt-4">
-              <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight text-ink">Browse all</h2>
+              <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight text-ink">All projects</h2>
               <RepoGrid
                 repos={repos}
                 query={query}

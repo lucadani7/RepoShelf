@@ -93,12 +93,18 @@ export async function updateRepo(_prev: ActionResult, formData: FormData): Promi
   const id = text(formData, "id");
   if (!id) return { ok: false, message: "Missing repo." };
 
+  const featured = formData.get("featured") === "on";
+
+  // Only one repo can be featured: un-feature the others first
+  if (featured) await db.update(repo).set({ featured: false }).where(eq(repo.featured, true));
+
   const updated = await db
     .update(repo)
     .set({
       note: text(formData, "note"),
       framework: text(formData, "framework"),
       tags: parseTags(text(formData, "tags")),
+      featured,
     })
     .where(eq(repo.id, id))
     .returning({ fullName: repo.fullName });

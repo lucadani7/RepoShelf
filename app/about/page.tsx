@@ -9,7 +9,7 @@ import { countTags } from "@/lib/tags";
 
 export const metadata: Metadata = {
   title: "About — RepoShelf",
-  description: "What RepoShelf is, and who's behind it.",
+  description: `What RepoShelf is, and a little about ${OWNER.name}.`,
 };
 
 export default async function AboutPage() {
@@ -18,7 +18,7 @@ export default async function AboutPage() {
   const languages = new Set(repos.map((r) => r.language).filter(Boolean));
 
   const stats = [
-    { value: repos.length, label: repos.length === 1 ? "repository" : "repositories" },
+    { value: repos.length, label: repos.length === 1 ? "project" : "projects" },
     { value: tags.length, label: tags.length === 1 ? "tag" : "tags" },
     { value: languages.size, label: languages.size === 1 ? "language" : "languages" },
   ];
@@ -30,7 +30,7 @@ export default async function AboutPage() {
         <header className="pt-14 pb-12 sm:pt-20">
           <h1 className="font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">About</h1>
           <p className="mt-5 text-xl leading-snug text-ink-2 sm:text-2xl">
-            RepoShelf is a small, hand-picked collection of GitHub repositories worth knowing about.
+            RepoShelf is where I show my open-source projects, organised by topic.
           </p>
         </header>
 
@@ -47,10 +47,10 @@ export default async function AboutPage() {
         </dl>
 
         <section className="mt-12 space-y-5 text-lg leading-relaxed text-ink-2">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">Why it exists</h2>
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">Why RepoShelf</h2>
           <p>
-            Stars and bookmarks pile up and get lost. RepoShelf is the opposite: a short list, chosen by hand, where
-            every repo is here for a reason. Many come with a note on why they&apos;re worth a look.
+            A GitHub profile lists everything in one long column. RepoShelf picks out the projects I&apos;m happy to
+            show, groups them by topic, and adds a short note on what each one is.
           </p>
           <p>
             Details like stars, descriptions and languages come straight from GitHub and are refreshed every day, so
@@ -59,7 +59,7 @@ export default async function AboutPage() {
         </section>
 
         <section className="mt-12 rounded-3xl bg-surface p-6 shadow-soft sm:p-8">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">Who&apos;s behind it</h2>
+          <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">About me</h2>
           <p className="mt-1 text-muted">{OWNER.name}</p>
           <p className="mt-4 text-lg leading-relaxed text-ink-2">{OWNER.bio}</p>
           {OWNER.githubUrl && (
@@ -78,7 +78,7 @@ export default async function AboutPage() {
 
         <p className="mt-12 text-center">
           <Link href="/" className="text-lg text-link hover:underline">
-            Browse the shelf ›
+            See the projects ›
           </Link>
         </p>
       </main>

@@ -1,16 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { SITE_URL } from "@/lib/site";
+import { OWNER, SITE_URL, TAGLINE } from "@/lib/site";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "RepoShelf — curated GitHub repositories",
-  description: "A hand-picked shelf of GitHub repositories worth knowing about.",
+  title: `RepoShelf — projects by ${OWNER.name}`,
+  description: TAGLINE,
   openGraph: {
     title: "RepoShelf",
-    description: "A hand-picked shelf of GitHub repositories worth knowing about.",
+    description: TAGLINE,
     url: "/",
     siteName: "RepoShelf",
     type: "website",

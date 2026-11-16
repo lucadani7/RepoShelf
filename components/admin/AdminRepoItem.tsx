@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { updateRepo, type ActionResult } from "@/app/actions";
 import type { Repo } from "@/lib/types";
+import RepoAvatar from "@/components/RepoAvatar";
 import RemoveButton from "./RemoveButton";
 
 const inputClass =
@@ -20,12 +21,7 @@ export default function AdminRepoItem({ repo }: { repo: Repo }) {
   return (
     <li className="rounded-2xl px-2 py-3 transition hover:bg-canvas">
       <div className="flex items-center gap-3">
-        {repo.avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={repo.avatarUrl} alt="" width={32} height={32} className="h-8 w-8 shrink-0 rounded-lg ring-1 ring-ink/5" />
-        ) : (
-          <div className="h-8 w-8 shrink-0 rounded-lg bg-canvas" />
-        )}
+        <RepoAvatar repo={repo} size={32} />
         <div className="min-w-0 flex-1">
           <a
             href={repo.url}
@@ -36,6 +32,7 @@ export default function AdminRepoItem({ repo }: { repo: Repo }) {
             {repo.fullName}
           </a>
           <p className="truncate text-xs text-faint">
+            {repo.featured && <span className="mr-1.5 font-medium text-accent">★ Featured</span>}
             {[repo.framework, ...repo.tags].filter(Boolean).join(" · ") || "No tags"}
           </p>
         </div>
@@ -86,6 +83,16 @@ export default function AdminRepoItem({ repo }: { repo: Repo }) {
               placeholder="Why it's on the shelf"
               className={inputClass}
             />
+          </label>
+          <label className="flex w-fit cursor-pointer items-center gap-2.5 text-sm text-ink">
+            <input
+              type="checkbox"
+              name="featured"
+              defaultChecked={repo.featured}
+              className="h-4 w-4 rounded accent-accent"
+            />
+            Featured on the home page
+            <span className="text-faint">(replaces the current one)</span>
           </label>
           <div className="flex items-center gap-3">
             <button

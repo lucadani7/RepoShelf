@@ -1,5 +1,8 @@
+import RepoAvatar from "@/components/RepoAvatar";
 import { compactNumber, languageColor } from "@/lib/languages";
 import type { Repo } from "@/lib/types";
+
+const monthYear = new Intl.DateTimeFormat("en", { month: "short", year: "numeric", timeZone: "UTC" });
 
 /** The big highlight card at the top of the page. */
 export default function FeaturedCard({ repo }: { repo: Repo }) {
@@ -11,21 +14,12 @@ export default function FeaturedCard({ repo }: { repo: Repo }) {
       // Soft tint taken from the repo's language color
       style={{ backgroundImage: `radial-gradient(120% 120% at 100% 0%, ${color}2e 0%, transparent 55%)` }}
     >
-      <p className="text-xs font-semibold tracking-[0.12em] text-accent uppercase">Featured · Newest on the shelf</p>
+      <p className="text-xs font-semibold tracking-[0.12em] text-accent uppercase">Featured project</p>
 
       <div className="mt-6 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-2xl">
           <div className="flex items-center gap-4">
-            {repo.avatarUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={`${repo.avatarUrl}${repo.avatarUrl.includes("?") ? "&" : "?"}s=160`}
-                alt=""
-                width={64}
-                height={64}
-                className="h-14 w-14 shrink-0 rounded-2xl sm:h-16 sm:w-16 shadow-soft ring-1 ring-ink/5"
-              />
-            )}
+            <RepoAvatar repo={repo} size={64} className="shadow-soft" />
             <div className="min-w-0">
               <h2 className="truncate font-display text-3xl font-semibold tracking-tight text-ink sm:text-5xl">
                 {repo.name}
@@ -47,8 +41,9 @@ export default function FeaturedCard({ repo }: { repo: Repo }) {
                 {repo.language}
               </span>
             )}
-            <span>★ {compactNumber.format(repo.stars)} stars</span>
-            <span>⑂ {compactNumber.format(repo.forks)} forks</span>
+            {repo.stars > 0 && <span>★ {compactNumber.format(repo.stars)} stars</span>}
+            {repo.forks > 0 && <span>⑂ {compactNumber.format(repo.forks)} forks</span>}
+            {repo.updatedAt && <span>Updated {monthYear.format(new Date(repo.updatedAt))}</span>}
           </div>
         </div>
 

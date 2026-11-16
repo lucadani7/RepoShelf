@@ -29,6 +29,7 @@ export async function getRepos(): Promise<Repo[]> {
     note: r.note,
     framework: r.framework,
     tags: r.tags,
+    featured: r.featured,
     description: r.description,
     homepage: r.homepage,
     stars: r.stars,

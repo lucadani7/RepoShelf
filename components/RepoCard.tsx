@@ -1,3 +1,4 @@
+import RepoAvatar from "@/components/RepoAvatar";
 import { compactNumber as compact, languageColor } from "@/lib/languages";
 import type { Repo } from "@/lib/types";
 
@@ -16,19 +17,7 @@ export default function RepoCard({ repo, activeTag, onTagClick }: Props) {
   return (
     <article className="group relative flex flex-col rounded-3xl bg-surface p-6 shadow-soft transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lifted">
       <header className="flex items-start gap-3.5">
-        {repo.avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={`${repo.avatarUrl}${repo.avatarUrl.includes("?") ? "&" : "?"}s=96`}
-            alt=""
-            width={44}
-            height={44}
-            loading="lazy"
-            className="h-11 w-11 shrink-0 rounded-xl ring-1 ring-ink/5"
-          />
-        ) : (
-          <div className="h-11 w-11 shrink-0 rounded-xl bg-canvas" />
-        )}
+        <RepoAvatar repo={repo} size={44} />
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-lg leading-tight font-semibold text-ink">
             {/* The ::after makes the whole card clickable */}
@@ -97,8 +86,12 @@ export default function RepoCard({ repo, activeTag, onTagClick }: Props) {
             {repo.language}
           </span>
         )}
-        <span title={`${repo.stars.toLocaleString("en")} stars`}>★ {compact.format(repo.stars)}</span>
-        <span title={`${repo.forks.toLocaleString("en")} forks`}>⑂ {compact.format(repo.forks)}</span>
+        {repo.stars > 0 && (
+          <span title={`${repo.stars.toLocaleString("en")} stars`}>★ {compact.format(repo.stars)}</span>
+        )}
+        {repo.forks > 0 && (
+          <span title={`${repo.forks.toLocaleString("en")} forks`}>⑂ {compact.format(repo.forks)}</span>
+        )}
         {repo.updatedAt && (
           <span className="ml-auto text-faint">Updated {monthYear.format(new Date(repo.updatedAt))}</span>
         )}
