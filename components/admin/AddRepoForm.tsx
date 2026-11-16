@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef } from "react";
 import { addRepo, type ActionResult } from "@/app/actions";
 
 const inputClass =
-  "w-full rounded-xl bg-canvas px-4 py-3 text-[15px] text-ink placeholder:text-faint transition focus:bg-white focus:ring-2 focus:ring-accent/40 focus:outline-none";
+  "w-full rounded-xl bg-canvas px-4 py-3 text-[15px] text-ink placeholder:text-faint transition focus:bg-surface focus:ring-2 focus:ring-accent/40 focus:outline-none";
 
 export default function AddRepoForm() {
   const [state, formAction, pending] = useActionState<ActionResult, FormData>(addRepo, null);

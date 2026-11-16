@@ -7,7 +7,7 @@ export default function FeaturedCard({ repo }: { repo: Repo }) {
 
   return (
     <article
-      className="relative overflow-hidden rounded-[2rem] bg-white p-8 shadow-soft sm:p-12"
+      className="relative overflow-hidden rounded-[2rem] bg-surface p-6 shadow-soft sm:p-12"
       // Soft tint taken from the repo's language color
       style={{ backgroundImage: `radial-gradient(120% 120% at 100% 0%, ${color}2e 0%, transparent 55%)` }}
     >
@@ -23,18 +23,18 @@ export default function FeaturedCard({ repo }: { repo: Repo }) {
                 alt=""
                 width={64}
                 height={64}
-                className="h-16 w-16 rounded-2xl shadow-soft ring-1 ring-black/5"
+                className="h-14 w-14 shrink-0 rounded-2xl sm:h-16 sm:w-16 shadow-soft ring-1 ring-ink/5"
               />
             )}
             <div className="min-w-0">
-              <h2 className="truncate font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+              <h2 className="truncate font-display text-3xl font-semibold tracking-tight text-ink sm:text-5xl">
                 {repo.name}
               </h2>
               <p className="mt-1 text-muted">{repo.owner}</p>
             </div>
           </div>
 
-          {repo.description && <p className="mt-6 text-xl leading-relaxed text-ink-2">{repo.description}</p>}
+          {repo.description && <p className="mt-6 text-lg leading-relaxed text-ink-2 sm:text-xl">{repo.description}</p>}
           {repo.note && <p className="mt-4 text-[15px] leading-relaxed text-muted">“{repo.note}”</p>}
 
           <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">

@@ -8,7 +8,7 @@ export default function ShelfCard({ repo }: { repo: Repo }) {
       href={repo.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex h-full w-[17.5rem] shrink-0 snap-start flex-col rounded-3xl bg-white p-5 shadow-soft transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lifted sm:w-[19rem]"
+      className="group flex h-full w-[17.5rem] shrink-0 snap-start flex-col rounded-3xl bg-surface p-5 shadow-soft transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lifted sm:w-[19rem]"
     >
       <div className="flex items-center gap-3">
         {repo.avatarUrl ? (
@@ -19,7 +19,7 @@ export default function ShelfCard({ repo }: { repo: Repo }) {
             width={48}
             height={48}
             loading="lazy"
-            className="h-12 w-12 shrink-0 rounded-2xl ring-1 ring-black/5"
+            className="h-12 w-12 shrink-0 rounded-2xl ring-1 ring-ink/5"
           />
         ) : (
           <div className="h-12 w-12 shrink-0 rounded-2xl bg-canvas" />

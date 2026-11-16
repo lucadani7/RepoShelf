@@ -24,7 +24,7 @@ export default async function TagsPage() {
         </header>
 
         {tags.length === 0 ? (
-          <p className="rounded-3xl bg-white py-20 text-center text-lg text-muted shadow-soft">No tags yet.</p>
+          <p className="rounded-3xl bg-surface py-20 text-center text-lg text-muted shadow-soft">No tags yet.</p>
         ) : (
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {tags.map(({ tag, count }) => {
@@ -37,7 +37,7 @@ export default async function TagsPage() {
                 <li key={tag}>
                   <Link
                     href={tagHref(tag)}
-                    className="flex items-center justify-between gap-4 rounded-3xl bg-white p-6 shadow-soft transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lifted"
+                    className="flex items-center justify-between gap-4 rounded-3xl bg-surface p-6 shadow-soft transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lifted"
                   >
                     <div>
                       <p className="font-display text-2xl font-semibold tracking-tight text-ink">{tagLabel(tag)}</p>
@@ -55,7 +55,7 @@ export default async function TagsPage() {
                           width={32}
                           height={32}
                           loading="lazy"
-                          className="h-8 w-8 rounded-lg bg-white ring-2 ring-white"
+                          className="h-8 w-8 rounded-lg bg-surface ring-2 ring-surface"
                         />
                       ))}
                     </div>

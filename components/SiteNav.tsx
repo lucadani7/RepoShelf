@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ThemeToggle from "./ThemeToggle";
 
 type Props = {
   /** On the home page these scroll instead of navigating */
@@ -22,18 +23,18 @@ export default function SiteNav({ onBrowse, onSearch }: Props) {
     `transition hover:text-ink ${pathname === href || pathname.startsWith(`${href}/`) ? "text-ink" : ""}`;
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-black/5 bg-canvas/75 backdrop-blur-xl backdrop-saturate-150">
+    <nav className="sticky top-0 z-50 border-b border-ink/5 bg-canvas/75 backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex h-12 max-w-6xl items-center justify-between px-5 text-sm">
         <Link href="/" className="font-semibold tracking-tight text-ink">
           RepoShelf
         </Link>
-        <div className="flex items-center gap-5 text-ink-2 sm:gap-6">
+        <div className="flex items-center gap-4 text-ink-2 sm:gap-6">
           {onBrowse ? (
-            <button type="button" onClick={onBrowse} className="transition hover:text-ink">
+            <button type="button" onClick={onBrowse} className="hidden transition hover:text-ink sm:inline">
               Browse
             </button>
           ) : (
-            <Link href="/#browse" className="transition hover:text-ink">
+            <Link href="/#browse" className="hidden transition hover:text-ink sm:inline">
               Browse
             </Link>
           )}
@@ -52,6 +53,7 @@ export default function SiteNav({ onBrowse, onSearch }: Props) {
               {SEARCH_ICON}
             </Link>
           )}
+          <ThemeToggle />
         </div>
       </div>
     </nav>

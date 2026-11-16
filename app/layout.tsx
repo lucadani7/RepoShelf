@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
-import React from "react";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://reposhelf.getastrobyte.com"),
@@ -13,15 +14,27 @@ export const metadata: Metadata = {
     siteName: "RepoShelf",
     type: "website",
   },
-  // The site has its own color design; tells the Dark Reader extension not to restyle it
+  // The site has its own light and dark designs; tells the Dark Reader extension not to restyle it
   other: { "darkreader-lock": "true" },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const viewport: Viewport = {
+  // Browser UI (e.g. Safari's address bar) matches the page background
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f5f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-      // suppressHydrationWarning: browser extensions (e.g. Scribe) add attributes here
-      <html lang="en" suppressHydrationWarning>
+    // suppressHydrationWarning: the theme script and browser extensions (e.g. Scribe)
+    // set attributes on <html>/<body> before React loads
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body suppressHydrationWarning>{children}</body>
-      </html>
+    </html>
   );
 }

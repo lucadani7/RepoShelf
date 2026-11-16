@@ -66,7 +66,7 @@ export default async function TagPage({ params }: { params: Params }) {
                 <Link
                   key={other}
                   href={tagHref(other)}
-                  className="h-8 rounded-full bg-white px-3.5 text-sm leading-8 text-ink shadow-soft ring-1 ring-black/5 transition hover:ring-black/10"
+                  className="h-8 rounded-full bg-surface px-3.5 text-sm leading-8 text-ink shadow-soft ring-1 ring-ink/5 transition hover:ring-ink/10"
                 >
                   {tagLabel(other)} <span className="text-faint">{count}</span>
                 </Link>

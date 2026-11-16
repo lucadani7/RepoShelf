@@ -29,17 +29,17 @@ export default async function AboutPage() {
       <main className="mx-auto max-w-3xl px-5">
         <header className="pt-14 pb-12 sm:pt-20">
           <h1 className="font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">About</h1>
-          <p className="mt-5 text-2xl leading-snug text-ink-2">
+          <p className="mt-5 text-xl leading-snug text-ink-2 sm:text-2xl">
             RepoShelf is a small, hand-picked collection of GitHub repositories worth knowing about.
           </p>
         </header>
 
-        <dl className="grid grid-cols-3 gap-4">
+        <dl className="grid grid-cols-3 gap-3 sm:gap-4">
           {stats.map(({ value, label }) => (
-            <div key={label} className="rounded-3xl bg-white p-6 text-center shadow-soft">
+            <div key={label} className="rounded-3xl bg-surface px-2 py-5 text-center shadow-soft sm:p-6">
               <dt className="sr-only">{label}</dt>
               <dd>
-                <span className="block font-display text-4xl font-semibold tracking-tight text-ink">{value}</span>
+                <span className="block font-display text-3xl font-semibold sm:text-4xl tracking-tight text-ink">{value}</span>
                 <span className="mt-1 block text-sm text-muted">{label}</span>
               </dd>
             </div>
@@ -58,7 +58,7 @@ export default async function AboutPage() {
           </p>
         </section>
 
-        <section className="mt-12 rounded-3xl bg-white p-8 shadow-soft">
+        <section className="mt-12 rounded-3xl bg-surface p-6 shadow-soft sm:p-8">
           <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">Who&apos;s behind it</h2>
           <p className="mt-1 text-muted">{OWNER.name}</p>
           <p className="mt-4 text-lg leading-relaxed text-ink-2">{OWNER.bio}</p>

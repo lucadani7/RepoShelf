@@ -42,7 +42,7 @@ export default function Shelf({ title, repos, seeAllHref }: Props) {
 
   return (
     <section className="mt-12">
-      <div className="mb-4 flex items-end justify-between gap-4 border-t border-black/10 pt-4">
+      <div className="mb-4 flex items-end justify-between gap-4 border-t border-ink/10 pt-4">
         <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">{title}</h2>
         <div className="flex items-center gap-2">
           {seeAllHref && (
@@ -99,7 +99,7 @@ function ArrowButton({
       aria-label={label}
       onClick={onClick}
       disabled={disabled}
-      className="hidden h-8 w-8 items-center justify-center rounded-full bg-white text-ink shadow-soft ring-1 ring-black/5 transition hover:ring-black/15 disabled:opacity-35 disabled:hover:ring-black/5 sm:flex"
+      className="hidden h-8 w-8 items-center justify-center rounded-full bg-surface text-ink shadow-soft ring-1 ring-ink/5 transition hover:ring-ink/15 disabled:opacity-35 disabled:hover:ring-ink/5 sm:flex"
     >
       <svg viewBox="0 0 8 12" className="h-3 w-3" aria-hidden="true">
         <path

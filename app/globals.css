@@ -1,42 +1,83 @@
 @import "tailwindcss";
 
-/* Soft, Apple-inspired palette */
-@theme {
+/* dark: utilities follow the theme picked on <html data-theme="…"> */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Colors are CSS variables so they can switch between light and dark.
+ * Tailwind classes (bg-surface, text-ink, ring-ink/5 …) read them through @theme below.
+ */
+:root {
+  color-scheme: light;
+  --canvas: #f5f5f7; /* page background */
+  --surface: #ffffff; /* cards, pills, panels */
+  --ink: #1d1d1f; /* main text; also hairlines at low opacity */
+  --ink-2: #424245; /* body text */
+  --muted: #6e6e73; /* secondary text */
+  --faint: #86868b; /* hints */
+  --accent: #0071e3; /* primary buttons */
+  --accent-hover: #0077ed;
+  --link: #0066cc;
+  --danger: #d70015;
+  --success: #1d8a3a;
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px rgb(0 0 0 / 0.06);
+  --shadow-lifted: 0 2px 4px rgb(0 0 0 / 0.04), 0 24px 48px rgb(0 0 0 / 0.1);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #000000;
+  --surface: #1c1c1e;
+  --ink: #f5f5f7;
+  --ink-2: #d2d2d7;
+  --muted: #a1a1a6;
+  --faint: #86868b;
+  --accent: #0a84ff;
+  --accent-hover: #409cff;
+  --link: #2997ff;
+  --danger: #ff453a;
+  --success: #30d158;
+  /* Shadows barely show on black, so a faint top highlight does the lifting */
+  --shadow-soft: 0 0 0 1px rgb(255 255 255 / 0.06), 0 8px 24px rgb(0 0 0 / 0.5);
+  --shadow-lifted: 0 0 0 1px rgb(255 255 255 / 0.1), 0 24px 48px rgb(0 0 0 / 0.6);
+}
+
+@theme inline {
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial,
     sans-serif;
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
 
-  --color-canvas: #f5f5f7; /* page background */
-  --color-ink: #1d1d1f; /* main text */
-  --color-ink-2: #424245; /* body text */
-  --color-muted: #6e6e73; /* secondary text */
-  --color-faint: #86868b; /* hints */
-  --color-accent: #0071e3; /* links, primary buttons */
-  --color-accent-hover: #0077ed;
-  --color-link: #0066cc;
-  --color-danger: #d70015;
-  --color-success: #1d8a3a;
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-link: var(--link);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
 
-  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px rgb(0 0 0 / 0.06);
-  --shadow-lifted: 0 2px 4px rgb(0 0 0 / 0.04), 0 24px 48px rgb(0 0 0 / 0.1);
-}
-
-:root {
-  color-scheme: light;
+  --shadow-soft: var(--shadow-soft);
+  --shadow-lifted: var(--shadow-lifted);
 }
 
 body {
   min-height: 100dvh;
-  background-color: var(--color-canvas);
-  color: var(--color-ink);
+  background-color: var(--canvas);
+  color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 ::selection {
-  background: rgb(0 113 227 / 0.18);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 /* Horizontal shelves scroll without a visible scrollbar */

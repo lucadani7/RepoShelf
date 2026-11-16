@@ -55,7 +55,7 @@ export default function ShelfPage({ repos }: { repos: Repo[] }) {
         </header>
 
         {repos.length === 0 ? (
-          <p className="rounded-3xl bg-white py-20 text-center text-lg text-muted shadow-soft">
+          <p className="rounded-3xl bg-surface py-20 text-center text-lg text-muted shadow-soft">
             The shelf is empty for now. Check back soon.
           </p>
         ) : (
@@ -73,7 +73,7 @@ export default function ShelfPage({ repos }: { repos: Repo[] }) {
               />
             ))}
 
-            <section ref={browseRef} id="browse" className="mt-16 scroll-mt-20 border-t border-black/10 pt-4">
+            <section ref={browseRef} id="browse" className="mt-16 scroll-mt-20 border-t border-ink/10 pt-4">
               <h2 className="mb-6 font-display text-2xl font-semibold tracking-tight text-ink">Browse all</h2>
               <RepoGrid
                 repos={repos}

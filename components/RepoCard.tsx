@@ -14,7 +14,7 @@ type Props = {
 
 export default function RepoCard({ repo, activeTag, onTagClick }: Props) {
   return (
-    <article className="group relative flex flex-col rounded-3xl bg-white p-6 shadow-soft transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lifted">
+    <article className="group relative flex flex-col rounded-3xl bg-surface p-6 shadow-soft transition duration-300 ease-out hover:-translate-y-1 hover:shadow-lifted">
       <header className="flex items-start gap-3.5">
         {repo.avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -24,7 +24,7 @@ export default function RepoCard({ repo, activeTag, onTagClick }: Props) {
             width={44}
             height={44}
             loading="lazy"
-            className="h-11 w-11 shrink-0 rounded-xl ring-1 ring-black/5"
+            className="h-11 w-11 shrink-0 rounded-xl ring-1 ring-ink/5"
           />
         ) : (
           <div className="h-11 w-11 shrink-0 rounded-xl bg-canvas" />
@@ -39,7 +39,7 @@ export default function RepoCard({ repo, activeTag, onTagClick }: Props) {
           <p className="mt-0.5 truncate text-sm text-muted">{repo.owner}</p>
         </div>
         {repo.archived && (
-          <span className="shrink-0 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
+          <span className="shrink-0 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 dark:bg-amber-400/15 dark:text-amber-300">
             Archived
           </span>
         )}
@@ -61,7 +61,7 @@ export default function RepoCard({ repo, activeTag, onTagClick }: Props) {
               type="button"
               onClick={() => onTagClick(tag)}
               className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
-                activeTag === tag ? "bg-ink text-white" : "bg-canvas text-ink-2 hover:bg-black/[0.07]"
+                activeTag === tag ? "bg-ink text-canvas" : "bg-canvas text-ink-2 hover:bg-ink/[0.07]"
               }`}
             >
               {tag}

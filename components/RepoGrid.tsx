@@ -13,7 +13,7 @@ const SORT_LABELS: Record<SortKey, string> = {
 };
 
 const pillSelect =
-  "h-10 cursor-pointer appearance-none rounded-full bg-white bg-[length:10px] bg-[right_1rem_center] bg-no-repeat pr-9 pl-4 text-sm text-ink shadow-soft ring-1 ring-black/5 transition hover:ring-black/10 focus:ring-2 focus:ring-accent/40 focus:outline-none";
+  "h-10 cursor-pointer appearance-none rounded-full bg-surface bg-[length:10px] bg-[right_1rem_center] bg-no-repeat pr-9 pl-4 text-sm text-ink shadow-soft ring-1 ring-ink/5 transition hover:ring-ink/10 focus:ring-2 focus:ring-accent/40 focus:outline-none";
 
 // Small chevron for the selects (inline SVG, no extra file)
 const chevron = {
@@ -79,7 +79,7 @@ export default function RepoGrid({
   return (
     <section>
       {/* Search */}
-      <div className="relative max-w-xl">
+      <div className="relative w-full max-w-xl">
         <svg
           aria-hidden="true"
           viewBox="0 0 20 20"
@@ -95,25 +95,25 @@ export default function RepoGrid({
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder="Search repos, notes, languages, topics"
           aria-label="Search repositories"
-          className="h-12 w-full rounded-full bg-white pr-5 pl-12 text-base text-ink shadow-soft ring-1 ring-black/5 transition placeholder:text-faint focus:ring-2 focus:ring-accent/40 focus:outline-none"
+          className="h-12 w-full rounded-full bg-surface pr-5 pl-12 text-base text-ink shadow-soft ring-1 ring-ink/5 transition placeholder:text-faint focus:ring-2 focus:ring-accent/40 focus:outline-none"
         />
       </div>
 
-      {/* Filters */}
-      <div className="mt-5 flex flex-wrap items-center gap-2">
-        {showTagFilter && allTags.length > 0 && (
-          <>
-            <TagPill active={activeTag === null} onClick={() => onTagChange(null)}>
-              All
+      {/* Filters: tags scroll sideways on phones, wrap on larger screens */}
+      {showTagFilter && allTags.length > 0 && (
+        <div className="no-scrollbar -mx-5 mt-5 flex gap-2 overflow-x-auto px-5 py-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+          <TagPill active={activeTag === null} onClick={() => onTagChange(null)}>
+            All
+          </TagPill>
+          {allTags.map((tag) => (
+            <TagPill key={tag} active={activeTag === tag} onClick={() => toggleTag(tag)}>
+              {tag}
             </TagPill>
-            {allTags.map((tag) => (
-              <TagPill key={tag} active={activeTag === tag} onClick={() => toggleTag(tag)}>
-                {tag}
-              </TagPill>
-            ))}
-            <span className="mx-1 hidden h-5 w-px bg-black/10 sm:block" aria-hidden="true" />
-          </>
-        )}
+          ))}
+        </div>
+      )}
+
+      <div className="mt-3 flex flex-wrap items-center gap-2">
         {allFrameworks.length > 0 && (
           <select
             value={framework}
@@ -168,8 +168,8 @@ function TagPill({ active, onClick, children }: { active: boolean; onClick: () =
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`h-10 rounded-full px-4 text-sm transition ${
-        active ? "bg-ink text-white shadow-soft" : "bg-white text-ink shadow-soft ring-1 ring-black/5 hover:ring-black/10"
+      className={`h-10 shrink-0 rounded-full px-4 text-sm whitespace-nowrap transition ${
+        active ? "bg-ink text-canvas shadow-soft" : "bg-surface text-ink shadow-soft ring-1 ring-ink/5 hover:ring-ink/10"
       }`}
     >
       {children}

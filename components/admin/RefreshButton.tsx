@@ -13,7 +13,7 @@ export default function RefreshButton() {
         type="button"
         disabled={pending}
         onClick={() => startTransition(async () => setResult(await refreshFromGitHub()))}
-        className="h-9 rounded-full bg-white px-4 text-sm text-ink ring-1 ring-black/10 transition hover:bg-canvas disabled:opacity-60"
+        className="h-9 rounded-full bg-surface px-4 text-sm text-ink ring-1 ring-ink/10 transition hover:bg-canvas disabled:opacity-60"
       >
         {pending ? "Refreshing…" : "Refresh from GitHub"}
       </button>

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
 import AddRepoForm from "@/components/admin/AddRepoForm";
 import { SignInButton, SignOutButton } from "@/components/admin/AuthButtons";
 import RefreshButton from "@/components/admin/RefreshButton";
 import RemoveButton from "@/components/admin/RemoveButton";
+import SiteNav from "@/components/SiteNav";
 import { getRepos } from "@/lib/repos";
 import { getSessionUser } from "@/lib/session";
 
@@ -15,21 +15,21 @@ export const metadata: Metadata = {
 
 type SearchParams = Promise<{ error?: string | string[] }>;
 
-const panel = "rounded-3xl bg-white p-6 shadow-soft sm:p-8";
+const panel = "rounded-3xl bg-surface p-5 shadow-soft sm:p-8";
 
 export default function AdminPage({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <main className="mx-auto max-w-3xl px-5 pt-16 pb-24">
-      <Link href="/" className="text-sm text-link hover:underline">
-        ‹ RepoShelf
-      </Link>
-      <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">Admin</h1>
+    <>
+      <SiteNav />
+      <main className="mx-auto max-w-3xl px-5 pt-12 pb-24 sm:pt-16">
+        <h1 className="font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">Admin</h1>
 
-      {/* Reading the session happens per request, so it streams in here */}
-      <Suspense fallback={<p className="mt-10 text-muted">Checking your session…</p>}>
-        <AdminPanel searchParams={searchParams} />
-      </Suspense>
-    </main>
+        {/* Reading the session happens per request, so it streams in here */}
+        <Suspense fallback={<p className="mt-10 text-muted">Checking your session…</p>}>
+          <AdminPanel searchParams={searchParams} />
+        </Suspense>
+      </main>
+    </>
   );
 }
 
@@ -66,13 +66,13 @@ async function AdminPanel({ searchParams }: { searchParams: SearchParams }) {
 
   return (
     <div className="mt-10 space-y-6">
-      <div className="flex items-center justify-between gap-4 rounded-full bg-white py-2 pr-2 pl-3 shadow-soft">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-4 rounded-full bg-surface py-2 pr-2 pl-3 shadow-soft">
+        <div className="flex min-w-0 items-center gap-3">
           {user.image && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={user.image} alt="" width={32} height={32} className="h-8 w-8 rounded-full" />
           )}
-          <span className="text-sm text-muted">
+          <span className="truncate text-sm text-muted">
             Signed in as <strong className="font-medium text-ink">{user.githubLogin}</strong>
           </span>
         </div>
@@ -95,7 +95,7 @@ async function AdminPanel({ searchParams }: { searchParams: SearchParams }) {
         {repos.length === 0 ? (
           <p className="text-muted">Nothing here yet. Add your first repo above.</p>
         ) : (
-          <ul className="-mx-2 divide-y divide-black/5">
+          <ul className="-mx-2 divide-y divide-ink/5">
             {repos.map((repo) => (
               <li key={repo.id} className="flex items-center gap-3 rounded-2xl px-2 py-3 transition hover:bg-canvas">
                 {repo.avatarUrl ? (
@@ -105,7 +105,7 @@ async function AdminPanel({ searchParams }: { searchParams: SearchParams }) {
                     alt=""
                     width={32}
                     height={32}
-                    className="h-8 w-8 rounded-lg ring-1 ring-black/5"
+                    className="h-8 w-8 rounded-lg ring-1 ring-ink/5"
                   />
                 ) : (
                   <div className="h-8 w-8 rounded-lg bg-canvas" />
