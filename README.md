@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RepoShelf
 
-## Getting Started
+A hand-picked shelf of GitHub repositories, at **reposhelf.getastrobyte.com**.
 
-First, run the development server:
+Repos are added and removed from the site itself, at `/admin`, by the owner only.
+
+**Stack:** Next.js 16 (App Router, Cache Components) · TypeScript · Tailwind CSS · Neon Postgres · Drizzle ORM · Better Auth (Sign in with GitHub) · Vercel
+
+## How it works
+
+- **Visitors** get a cached page. The repo list is read from the database once and cached (`lib/repos.ts`), so visits don't touch the database.
+- **You** sign in at `/admin` with GitHub. Only the account in `ADMIN_GITHUB_USERNAME` can sign in — anyone else is turned away and nothing is stored.
+- **Adding a repo:** paste a GitHub URL. The server fetches description, stars, language and topics from the GitHub API, saves them, and refreshes the cache instantly.
+- **Daily refresh:** a Vercel Cron job (`vercel.json`) calls `/api/cron/refresh` once a day to update stars and descriptions.
+
+## Run locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env.local   # fill in the values
+pnpm db:push                 # creates the tables in Neon
+pnpm dev                     # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000/admin and sign in.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | What it does |
+|---|---|
+| `pnpm dev` | Start the dev server |
+| `pnpm build` | Production build |
+| `pnpm db:push` | Apply `db/schema.ts` to the database |
+| `pnpm db:studio` | Browse the database in your browser |
+| `pnpm typecheck` | Check TypeScript |
+| `pnpm lint` | Run ESLint |
 
-## Learn More
+## Deploy (Vercel)
 
-To learn more about Next.js, take a look at the following resources:
+1. The Neon database is already connected to the Vercel project, so `DATABASE_URL` is set.
+2. Create a **second** GitHub OAuth app for production, with callback URL
+   `https://reposhelf.getastrobyte.com/api/auth/callback/github`.
+3. In Vercel → Settings → Environment Variables (Production), add:
+   `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` (from the production OAuth app),
+   `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL=https://reposhelf.getastrobyte.com`,
+   `ADMIN_GITHUB_USERNAME`, `GITHUB_TOKEN`, `CRON_SECRET`.
+4. In Vercel → Settings → Domains, add `reposhelf.getastrobyte.com`, then add the
+   `CNAME` record Vercel shows you at your domain registrar.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  page.tsx                   public page
+  admin/page.tsx             admin: sign in, add, remove, refresh
+  actions.ts                 server actions (add / remove / refresh), admin-only
+  api/auth/[...all]/route.ts Better Auth endpoints
+  api/cron/refresh/route.ts  daily GitHub refresh (Vercel Cron)
+components/
+  RepoGrid.tsx               search, filters, sorting
+  RepoCard.tsx               one repo card
+  admin/                     admin-only UI pieces
+db/
+  schema.ts                  database tables (repos + login)
+  index.ts                   database connection
+lib/
+  repos.ts                   cached list of repos
+  github.ts                  GitHub API + URL parsing + sync
+  auth.ts                    Better Auth config (who's admin)
+  session.ts                 read the signed-in user
+  types.ts                   shared types
+drizzle.config.ts            drizzle-kit config
+vercel.json                  daily cron
+```
