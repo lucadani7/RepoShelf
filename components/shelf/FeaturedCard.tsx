@@ -21,7 +21,7 @@ export default function FeaturedCard({ repo }: { repo: Repo }) {
           <div className="flex items-center gap-4">
             <RepoAvatar repo={repo} size={64} className="shadow-soft" />
             <div className="min-w-0">
-              <h2 className="truncate font-display text-3xl font-semibold tracking-tight text-ink sm:text-5xl">
+              <h2 className="font-display text-3xl leading-tight font-semibold tracking-tight [overflow-wrap:anywhere] text-ink sm:text-5xl">
                 {repo.name}
               </h2>
               <p className="mt-1 text-muted">{repo.owner}</p>
