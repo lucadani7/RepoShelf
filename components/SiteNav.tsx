@@ -44,6 +44,9 @@ export default function SiteNav({ onBrowse, onSearch }: Props) {
           <Link href="/about" className={linkClass("/about")}>
             About
           </Link>
+          <Link href="/admin" className={linkClass("/admin")}>
+            Admin
+          </Link>
           {onSearch ? (
             <button type="button" onClick={onSearch} aria-label="Search" className="transition hover:text-ink">
               {SEARCH_ICON}

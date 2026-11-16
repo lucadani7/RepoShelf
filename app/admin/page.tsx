@@ -33,17 +33,32 @@ export default function AdminPage({ searchParams }: { searchParams: SearchParams
   );
 }
 
+/**
+ * Shown after a failed "Sign in with GitHub". Anyone other than the owner is
+ * refused by lib/auth.ts, which Better Auth reports as "unable_to_create_user".
+ */
+function SignInError({ code }: { code: string | string[] }) {
+  const denied = (Array.isArray(code) ? code[0] : code) === "unable_to_create_user";
+
+  return (
+    <div role="alert" className="rounded-2xl bg-danger/10 px-5 py-4 text-left text-danger">
+      <p className="font-semibold">{denied ? "403 · Access denied" : "Sign-in failed"}</p>
+      <p className="mt-1 text-sm">
+        {denied
+          ? "This admin area belongs to the owner of RepoShelf. Your GitHub account isn't allowed to sign in here, and nothing about it was saved."
+          : "Something went wrong while signing in with GitHub. Please try again."}
+      </p>
+    </div>
+  );
+}
+
 async function AdminPanel({ searchParams }: { searchParams: SearchParams }) {
   const [user, params] = await Promise.all([getSessionUser(), searchParams]);
 
   if (!user) {
     return (
       <section className={`mt-10 space-y-5 text-center ${panel}`}>
-        {params.error && (
-          <p className="rounded-2xl bg-danger/10 px-4 py-3 text-sm text-danger">
-            Sign-in failed. Only the RepoShelf owner can sign in here.
-          </p>
-        )}
+        {params.error && <SignInError code={params.error} />}
         <p className="text-lg text-muted">Sign in with the owner&apos;s GitHub account to manage the shelf.</p>
         <SignInButton />
       </section>
