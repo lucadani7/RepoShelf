@@ -86,3 +86,25 @@ export async function refreshFromGitHub(): Promise<ActionResult> {
   }
   return { ok: true, message: `Updated all ${total} repos from GitHub.` };
 }
+
+export async function updateRepo(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
+  if (!(await getAdmin())) return NOT_ALLOWED;
+
+  const id = text(formData, "id");
+  if (!id) return { ok: false, message: "Missing repo." };
+
+  const updated = await db
+    .update(repo)
+    .set({
+      note: text(formData, "note"),
+      framework: text(formData, "framework"),
+      tags: parseTags(text(formData, "tags")),
+    })
+    .where(eq(repo.id, id))
+    .returning({ fullName: repo.fullName });
+
+  if (updated.length === 0) return { ok: false, message: "That repo no longer exists." };
+
+  updateTag(REPOS_TAG);
+  return { ok: true, message: `Saved ${updated[0].fullName}.` };
+}

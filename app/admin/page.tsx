@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import AddRepoForm from "@/components/admin/AddRepoForm";
 import { SignInButton, SignOutButton } from "@/components/admin/AuthButtons";
 import RefreshButton from "@/components/admin/RefreshButton";
-import RemoveButton from "@/components/admin/RemoveButton";
+import AdminRepoItem from "@/components/admin/AdminRepoItem";
 import SiteNav from "@/components/SiteNav";
 import { getRepos } from "@/lib/repos";
 import { getSessionUser } from "@/lib/session";
@@ -97,34 +97,7 @@ async function AdminPanel({ searchParams }: { searchParams: SearchParams }) {
         ) : (
           <ul className="-mx-2 divide-y divide-ink/5">
             {repos.map((repo) => (
-              <li key={repo.id} className="flex items-center gap-3 rounded-2xl px-2 py-3 transition hover:bg-canvas">
-                {repo.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={repo.avatarUrl}
-                    alt=""
-                    width={32}
-                    height={32}
-                    className="h-8 w-8 rounded-lg ring-1 ring-ink/5"
-                  />
-                ) : (
-                  <div className="h-8 w-8 rounded-lg bg-canvas" />
-                )}
-                <div className="min-w-0 flex-1">
-                  <a
-                    href={repo.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block truncate font-medium text-ink hover:text-link"
-                  >
-                    {repo.fullName}
-                  </a>
-                  <p className="truncate text-xs text-faint">
-                    {[repo.framework, ...repo.tags].filter(Boolean).join(" · ") || "No tags"}
-                  </p>
-                </div>
-                <RemoveButton id={repo.id} fullName={repo.fullName} />
-              </li>
+              <AdminRepoItem key={repo.id} repo={repo} />
             ))}
           </ul>
         )}

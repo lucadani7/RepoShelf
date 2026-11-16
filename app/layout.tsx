@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import { SITE_URL } from "@/lib/site";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://reposhelf.getastrobyte.com"),
+  metadataBase: new URL(SITE_URL),
   title: "RepoShelf — curated GitHub repositories",
   description: "A hand-picked shelf of GitHub repositories worth knowing about.",
   openGraph: {

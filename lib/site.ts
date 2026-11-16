@@ -5,3 +5,6 @@ export const OWNER = {
   githubUrl: "https://github.com/lucadani7",
   bio: "I'm Luca. RepoShelf is where I keep the open-source projects I've found useful, interesting or simply well made — so they don't get lost among a thousand stars.",
 };
+
+/** Public address of the site (used for sitemap, robots and link previews) */
+export const SITE_URL = "https://reposhelf.getastrobyte.com";
