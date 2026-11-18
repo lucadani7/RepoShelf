@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { updateRepo, type ActionResult } from "@/app/actions";
+import { useActionState, useState, useTransition } from "react";
+import { refreshRepo, updateRepo, type ActionResult } from "@/app/actions";
 import type { Repo } from "@/lib/types";
 import RepoAvatar from "@/components/RepoAvatar";
 import RemoveButton from "./RemoveButton";
@@ -9,14 +9,26 @@ import RemoveButton from "./RemoveButton";
 const inputClass =
   "w-full rounded-xl bg-canvas px-3.5 py-2.5 text-[15px] text-ink placeholder:text-faint transition focus:bg-surface focus:ring-2 focus:ring-accent/40 focus:outline-none";
 
-/** One row in the admin list: shows the repo, with Edit and Remove. */
+/** One row in the admin list: shows the repo, with Refresh, Edit and Remove. */
 export default function AdminRepoItem({ repo }: { repo: Repo }) {
   const [editing, setEditing] = useState(false);
+  const [refreshResult, setRefreshResult] = useState<ActionResult>(null);
   const [state, formAction, pending] = useActionState<ActionResult, FormData>(async (prev, formData) => {
+    setRefreshResult(null);
     const result = await updateRepo(prev, formData);
     if (result?.ok) setEditing(false); // close the form once a save succeeds
     return result;
   }, null);
+
+  // ↻ — refresh just this repo from GitHub
+  const [refreshing, startRefresh] = useTransition();
+  const refresh = () =>
+    startRefresh(async () => {
+      setRefreshResult(await refreshRepo(repo.id));
+    });
+
+  // Show whichever happened last: a save or a refresh
+  const status = refreshResult ?? (state?.ok && !editing ? state : null);
 
   return (
     <li className="rounded-2xl px-2 py-3 transition hover:bg-canvas">
@@ -44,10 +56,30 @@ export default function AdminRepoItem({ repo }: { repo: Repo }) {
         >
           {editing ? "Cancel" : "Edit"}
         </button>
+        <button
+          type="button"
+          onClick={refresh}
+          disabled={refreshing}
+          aria-label={`Refresh ${repo.fullName} from GitHub`}
+          title="Refresh from GitHub"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition hover:bg-ink/[0.06] hover:text-ink disabled:opacity-60"
+        >
+          <svg viewBox="0 0 20 20" className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} aria-hidden="true">
+            <path
+              d="M16.5 10a6.5 6.5 0 1 1-1.9-4.6M16.5 3.5v3.5H13"
+              className="fill-none stroke-current"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
         <RemoveButton id={repo.id} fullName={repo.fullName} />
       </div>
 
-      {state?.ok && !editing && <p className="mt-2 ml-11 text-xs text-success">{state.message}</p>}
+      {status && (
+        <p className={`mt-2 ml-11 text-xs ${status.ok ? "text-success" : "text-danger"}`}>{status.message}</p>
+      )}
 
       {editing && (
         <form action={formAction} className="mt-3 space-y-3 sm:ml-11">

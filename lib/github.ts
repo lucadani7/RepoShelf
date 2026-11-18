@@ -99,6 +99,22 @@ export async function fetchGitHubRepo(fullName: string): Promise<GitHubResult> {
 }
 
 /**
+ * Re-fetches one repo from GitHub and saves the fresh details
+ * (description, stars, language, topics…). Your own fields are left alone.
+ */
+export async function syncRepoFromGitHub(id: string, currentFullName: string): Promise<GitHubResult> {
+  const result = await fetchGitHubRepo(currentFullName);
+  if (result.ok) {
+    const { fullName, owner, name, ...details } = result.data;
+    await db
+      .update(repo)
+      .set({ fullName, owner, name, ...details, syncedAt: new Date() })
+      .where(eq(repo.id, id));
+  }
+  return result;
+}
+
+/**
  * Re-fetches every repo from GitHub and updates the database.
  * Used by the daily cron job and the "Refresh from GitHub" button.
  */
@@ -109,17 +125,9 @@ export async function syncAllFromGitHub() {
 
   // One at a time keeps us well clear of GitHub's secondary rate limits.
   for (const row of rows) {
-    const result = await fetchGitHubRepo(row.fullName);
-    if (!result.ok) {
-      failed.push(`${row.fullName} (${result.reason})`);
-      continue;
-    }
-    const { fullName, owner, name, ...details } = result.data;
-    await db
-      .update(repo)
-      .set({ fullName, owner, name, ...details, syncedAt: new Date() })
-      .where(eq(repo.id, row.id));
-    updated++;
+    const result = await syncRepoFromGitHub(row.id, row.fullName);
+    if (result.ok) updated++;
+    else failed.push(`${row.fullName} (${result.reason})`);
   }
 
   return { total: rows.length, updated, failed };

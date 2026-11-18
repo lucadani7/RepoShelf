@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { db } from "@/db";
 import { repo } from "@/db/schema";
-import { fetchGitHubRepo, parseRepoInput, syncAllFromGitHub } from "@/lib/github";
+import { fetchGitHubRepo, parseRepoInput, syncAllFromGitHub, syncRepoFromGitHub } from "@/lib/github";
 import { REPOS_TAG } from "@/lib/repos";
 import { getAdmin } from "@/lib/session";
 
@@ -111,6 +111,32 @@ export async function updateRepo(_prev: ActionResult, formData: FormData): Promi
 
   if (updated.length === 0) return { ok: false, message: "That repo no longer exists." };
 
+  // Also pick up anything that changed on GitHub (description, stars, topics…)
+  const synced = await syncRepoFromGitHub(id, updated[0].fullName);
+
   updateTag(REPOS_TAG);
-  return { ok: true, message: `Saved ${updated[0].fullName}.` };
+  return synced.ok
+    ? { ok: true, message: `Saved ${updated[0].fullName} and updated it from GitHub.` }
+    : { ok: true, message: `Saved ${updated[0].fullName}. (Couldn't reach GitHub to refresh its details.)` };
+}
+
+/** The ↻ button: refresh one repo's details from GitHub. */
+export async function refreshRepo(id: string): Promise<ActionResult> {
+  if (!(await getAdmin())) return NOT_ALLOWED;
+
+  const [row] = await db.select({ fullName: repo.fullName }).from(repo).where(eq(repo.id, id));
+  if (!row) return { ok: false, message: "That repo no longer exists." };
+
+  const result = await syncRepoFromGitHub(id, row.fullName);
+  if (!result.ok) {
+    const reasons = {
+      not_found: "GitHub can't find it anymore. Was it renamed, deleted or made private?",
+      rate_limited: "GitHub's rate limit was hit. Try again in a few minutes.",
+      failed: "Couldn't reach GitHub. Try again in a moment.",
+    } as const;
+    return { ok: false, message: reasons[result.reason] };
+  }
+
+  updateTag(REPOS_TAG);
+  return { ok: true, message: `Updated ${result.data.fullName} from GitHub.` };
 }
