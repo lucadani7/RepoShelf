@@ -1,21 +1,27 @@
 # RepoShelf
 
-A hand-picked shelf of GitHub repositories, curated by [Luca Daniel Ionescu](https://github.com/lucadani7).
+A showcase of the open-source projects built by [Luca Daniel Ionescu](https://github.com/lucadani7).
 
 **Live:** https://reposhelf.getastrobyte.com
 
-Repos are added, edited and removed from the site itself, at `/admin`. Only the owner can sign in.
+Projects are added, edited and removed from the site itself, at `/admin`. Only the owner can sign in.
 
 ## Features
 
-- **Shelves, App Store style:** a featured repo (the newest one), a "Recently added" row, and one horizontally scrolling shelf per tag.
-- **Browse all:** search across names, descriptions, notes, languages and topics; filter by tag or framework; sort by date added, stars or last update.
-- **Tag pages:** `/tags` lists every tag; `/tags/<tag>` shows its repos and related tags.
-- **About page** with live stats (repos, tags, languages).
-- **Admin** (`/admin`): sign in with GitHub, paste a repo URL to add it, edit its note, framework and tags, remove it, or refresh everything from GitHub.
-- **Data from GitHub:** description, stars, forks, language, topics and last push are fetched automatically and refreshed once a day.
+- **A short home page:** a **Highlights** row (up to 6 projects you pick), a "Recently added" shelf, a few horizontally scrolling shelves for the most-used tags, and a link to the full list. It stays the same length however many projects you add.
+- **All projects** (`/projects`): search across names, descriptions, notes, languages, frameworks and topics; filter by tag or framework; sort by date added, stars or last update. The search icon in the navigation bar jumps straight here.
+- **Tag pages:** `/tags` lists every tag with the languages used in it; `/tags/<tag>` shows its projects and related tags.
+- **About page** with live stats (projects, tags, languages).
+- **Admin** (`/admin`), owner only:
+  - paste a GitHub URL to add a project;
+  - pick its **frameworks** from a preset list (frontend, backend, mobile, desktop, data & ML; several per project, e.g. FastAPI + Next.js);
+  - add tags and a note, and tick **Highlight** to show it at the top of the home page;
+  - **↻** refreshes one project from GitHub, **Refresh from GitHub** refreshes all; **Save** also refreshes;
+  - anyone else who signs in gets a **403 · Access denied** message and nothing about them is stored.
+- **Data from GitHub:** description, stars, forks, language, topics and last push are fetched automatically and refreshed once a day. Stars and forks are hidden while they're 0.
+- **Project icons:** your own projects get a monogram (e.g. "CN" for ChuckNorrisReact) tinted with the language color; other people's repos show their owner's avatar.
 - **Light and dark mode:** follows the device by default, with a toggle in the navigation bar (automatic → light → dark).
-- **Responsive:** designed for phones, tablets and desktop.
+- **Responsive:** designed for phones, tablets and desktop, with a floating navigation bar.
 - **Shareable:** favicon, home-screen icon, a generated link-preview image, `sitemap.xml` and `robots.txt`.
 
 ## Tech stack
@@ -32,9 +38,10 @@ Repos are added, edited and removed from the site itself, at `/admin`. Only the 
 ## How it works
 
 - **Visitors get cached pages.** The repo list is read from the database once and cached (`lib/repos.ts`), so visits don't hit the database. Pages refresh at least daily.
-- **Changes show up instantly.** Adding, editing or removing a repo in `/admin` clears the cache right away.
-- **Only the owner can sign in.** Anyone whose GitHub username isn't `ADMIN_GITHUB_USERNAME` is turned away and nothing about them is stored. Every admin action re-checks this on the server.
-- **Daily refresh.** Vercel Cron calls `/api/cron/refresh` (see `vercel.json`), which re-fetches every repo from GitHub. It's protected by `CRON_SECRET`.
+- **Changes show up instantly.** Adding, editing, refreshing or removing a project in `/admin` clears the cache right away.
+- **Only the owner can sign in.** Anyone whose GitHub username isn't `ADMIN_GITHUB_USERNAME` is turned away (403 · Access denied) and nothing about them is stored. Every admin action re-checks this on the server.
+- **Daily refresh.** Vercel Cron calls `/api/cron/refresh` (see `vercel.json`) once a day, which re-fetches every project from GitHub. It's protected by `CRON_SECRET`. On Vercel's free (Hobby) plan cron can't run more often, so for anything urgent use ↻ in `/admin`.
+- **Frameworks come from a fixed list** (`lib/frameworks.ts`), so names stay consistent. Older free-text values (e.g. "FastAPI + NextJS") are converted automatically.
 
 ## Run locally
 
@@ -83,6 +90,10 @@ Locally, the GitHub OAuth app's callback URL is `http://localhost:3000/api/auth/
 3. **Environment variables (Production):** `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` (from the production OAuth app), `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL=https://reposhelf.getastrobyte.com`, `ADMIN_GITHUB_USERNAME`, `GITHUB_TOKEN`, `CRON_SECRET`. Use different secrets than locally.
 4. **Domain:** add `reposhelf.getastrobyte.com` in Vercel → Domains, and the `CNAME` record Vercel shows at the domain registrar.
 
+### Database changes
+
+When `db/schema.ts` changes, run `pnpm db:push` **before** deploying, so the live site never asks for a column that doesn't exist yet. Local and production use the same Neon database.
+
 ### Branches
 
 - `main` is what's live. Every push to `main` deploys to production.
@@ -91,16 +102,19 @@ Locally, the GitHub OAuth app's callback URL is `http://localhost:3000/api/auth/
 
 ## Customizing
 
-- **Your name, bio and GitHub link:** `lib/site.ts`
+- **Your name, bio, GitHub link and tagline:** `lib/site.ts`
 - **Site address:** `SITE_URL` in `lib/site.ts`
+- **How many highlights are shown:** `MAX_HIGHLIGHTS` in `lib/site.ts`
+- **Framework list (add a new one here):** `lib/frameworks.ts`
 - **Colors (light and dark):** the variables at the top of `app/globals.css`
-- **Shelves (how many, minimum repos per tag shelf):** constants at the top of `components/shelf/ShelfPage.tsx`
+- **Shelves (how many tag shelves, minimum projects per shelf):** constants at the top of `components/shelf/ShelfPage.tsx`
 
 ## Project structure
 
 ```
 app/
-  page.tsx                     home page (shelves + browse all)
+  page.tsx                     home page (highlights + shelves)
+  projects/page.tsx            all projects, searchable
   tags/page.tsx                all tags
   tags/[tag]/page.tsx          one tag's repos
   about/page.tsx               about page
@@ -115,20 +129,23 @@ app/
   sitemap.ts, robots.ts        for search engines
   not-found.tsx                404 page
 components/
-  shelf/                       home page: featured card, shelves
-  admin/                       admin-only UI
+  shelf/                       home page: highlights, shelves
+  admin/                       admin-only UI (forms, framework picker, buttons)
+  RepoAvatar.tsx               monogram or owner avatar
+  ProjectsView.tsx             the list on /projects
   RepoGrid.tsx, RepoCard.tsx   searchable grid of repo cards
   SiteNav.tsx, SiteFooter.tsx  navigation bar and footer
   ThemeToggle.tsx              light / dark / automatic
   TagRepos.tsx                 grid on tag pages
 db/
-  schema.ts                    tables: repos + sign-in
+  schema.ts                    tables: projects + sign-in
   index.ts                     database connection
 lib/
-  repos.ts                     cached list of repos
+  repos.ts                     cached list of projects
+  frameworks.ts                preset framework list + converting old values
   github.ts                    GitHub API, URL parsing, daily sync
   auth.ts, session.ts          Better Auth config, who's signed in
-  site.ts                      owner info and site URL
+  site.ts                      owner info, tagline, site URL, highlights limit
   tags.ts, languages.ts        helpers
   theme.ts                     theme preference + no-flash script
   types.ts                     shared types
