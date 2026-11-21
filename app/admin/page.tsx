@@ -7,6 +7,7 @@ import AdminRepoItem from "@/components/admin/AdminRepoItem";
 import SiteNav from "@/components/SiteNav";
 import { getRepos } from "@/lib/repos";
 import { getSessionUser } from "@/lib/session";
+import { MAX_HIGHLIGHTS } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Admin — RepoShelf",
@@ -50,6 +51,17 @@ function SignInError({ code }: { code: string | string[] }) {
       </p>
     </div>
   );
+}
+
+/** Tells you how many projects are ticked for "Highlights" and what the home page does with them */
+function HighlightsSummary({ count }: { count: number }) {
+  const text =
+    count === 0
+      ? "No highlights picked: the home page shows your 3 newest projects that have a description. Use Edit → Highlight to choose."
+      : count > MAX_HIGHLIGHTS
+        ? `${count} highlights picked, but the home page only shows ${MAX_HIGHLIGHTS}: the newest ones.`
+        : `${count} of ${MAX_HIGHLIGHTS} highlights picked.`;
+  return <p className={`-mt-2 mb-4 text-sm ${count > MAX_HIGHLIGHTS ? "text-danger" : "text-muted"}`}>{text}</p>;
 }
 
 async function AdminPanel({ searchParams }: { searchParams: SearchParams }) {
@@ -106,6 +118,8 @@ async function AdminPanel({ searchParams }: { searchParams: SearchParams }) {
           </h2>
           {repos.length > 0 && <RefreshButton />}
         </div>
+
+        {repos.length > 0 && <HighlightsSummary count={repos.filter((r) => r.featured).length} />}
 
         {repos.length === 0 ? (
           <p className="text-muted">Nothing here yet. Add your first repo above.</p>

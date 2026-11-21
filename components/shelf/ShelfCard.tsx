@@ -24,8 +24,12 @@ export default function ShelfCard({ repo }: { repo: Repo }) {
       </p>
 
       <div className="mt-auto flex items-center gap-3 pt-4 text-xs text-muted">
-        {repo.framework && (
-          <span className="rounded-full bg-accent/10 px-2 py-0.5 font-medium text-accent">{repo.framework}</span>
+        {/* Compact card: first framework, "+N" for the rest */}
+        {repo.frameworks.length > 0 && (
+          <span className="rounded-full bg-accent/10 px-2 py-0.5 font-medium text-accent">
+            {repo.frameworks[0]}
+            {repo.frameworks.length > 1 && <span className="opacity-70"> +{repo.frameworks.length - 1}</span>}
+          </span>
         )}
         {repo.language && (
           <span className="flex items-center gap-1.5">

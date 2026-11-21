@@ -9,6 +9,9 @@ export const OWNER = {
 /** One-line description used on the home page, in link previews and search results */
 export const TAGLINE = "Open-source projects I've built, from web apps to command-line tools.";
 
+/** How many projects "Highlights" shows on the home page */
+export const MAX_HIGHLIGHTS = 6;
+
 /** Public address of the site (used for sitemap, robots and link previews) */
 export const SITE_URL = "https://reposhelf.getastrobyte.com";
 

@@ -11,9 +11,12 @@ export const repo = pgTable("repo", {
 
   // Your own fields
   note: text("note"),
+  /** Old single free-text value; read only as a fallback for repos not re-saved yet */
   framework: text("framework"),
+  /** Picked from the preset list in lib/frameworks.ts, e.g. ["FastAPI", "Next.js"] */
+  frameworks: text("frameworks").array().notNull().default([]),
   tags: text("tags").array().notNull().default([]),
-  /** Shown in the big card at the top of the home page (only one at a time) */
+  /** Shown in "Highlights" at the top of the home page (up to 6 are shown) */
   featured: boolean("featured").notNull().default(false),
 
   // Copied from GitHub, refreshed periodically

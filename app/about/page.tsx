@@ -77,7 +77,7 @@ export default async function AboutPage() {
         </section>
 
         <p className="mt-12 text-center">
-          <Link href="/" className="text-lg text-link hover:underline">
+          <Link href="/projects" className="text-lg text-link hover:underline">
             See the projects ›
           </Link>
         </p>

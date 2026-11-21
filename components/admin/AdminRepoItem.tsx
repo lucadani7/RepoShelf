@@ -4,6 +4,7 @@ import { useActionState, useState, useTransition } from "react";
 import { refreshRepo, updateRepo, type ActionResult } from "@/app/actions";
 import type { Repo } from "@/lib/types";
 import RepoAvatar from "@/components/RepoAvatar";
+import FrameworkPicker from "./FrameworkPicker";
 import RemoveButton from "./RemoveButton";
 
 const inputClass =
@@ -44,8 +45,8 @@ export default function AdminRepoItem({ repo }: { repo: Repo }) {
             {repo.fullName}
           </a>
           <p className="truncate text-xs text-faint">
-            {repo.featured && <span className="mr-1.5 font-medium text-accent">★ Featured</span>}
-            {[repo.framework, ...repo.tags].filter(Boolean).join(" · ") || "No tags"}
+            {repo.featured && <span className="mr-1.5 font-medium text-accent">★ Highlight</span>}
+            {[...repo.frameworks, ...repo.tags].join(" · ") || "No frameworks or tags"}
           </p>
         </div>
         <button
@@ -84,28 +85,17 @@ export default function AdminRepoItem({ repo }: { repo: Repo }) {
       {editing && (
         <form action={formAction} className="mt-3 space-y-3 sm:ml-11">
           <input type="hidden" name="id" value={repo.id} />
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="block">
-              <span className="mb-1 block text-xs font-medium text-muted">Framework</span>
-              <input
-                name="framework"
-                defaultValue={repo.framework ?? ""}
-                placeholder="Next.js"
-                className={inputClass}
-                autoComplete="off"
-              />
-            </label>
-            <label className="block">
-              <span className="mb-1 block text-xs font-medium text-muted">Tags (comma-separated)</span>
-              <input
-                name="tags"
-                defaultValue={repo.tags.join(", ")}
-                placeholder="web, react"
-                className={inputClass}
-                autoComplete="off"
-              />
-            </label>
-          </div>
+          <FrameworkPicker defaultValue={repo.frameworks} />
+          <label className="block">
+            <span className="mb-1 block text-xs font-medium text-muted">Tags (comma-separated)</span>
+            <input
+              name="tags"
+              defaultValue={repo.tags.join(", ")}
+              placeholder="web, react"
+              className={inputClass}
+              autoComplete="off"
+            />
+          </label>
           <label className="block">
             <span className="mb-1 block text-xs font-medium text-muted">Note</span>
             <textarea
@@ -123,8 +113,8 @@ export default function AdminRepoItem({ repo }: { repo: Repo }) {
               defaultChecked={repo.featured}
               className="h-4 w-4 rounded accent-accent"
             />
-            Featured on the home page
-            <span className="text-faint">(replaces the current one)</span>
+            Highlight on the home page
+            <span className="text-faint">(up to 6 are shown)</span>
           </label>
           <div className="flex items-center gap-3">
             <button

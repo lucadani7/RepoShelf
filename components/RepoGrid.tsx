@@ -49,7 +49,7 @@ export default function RepoGrid({
 
   const allFrameworks = useMemo(
     () =>
-      [...new Set(repos.map((r) => r.framework).filter((f): f is string => Boolean(f)))].sort((a, b) =>
+      [...new Set(repos.flatMap((r) => r.frameworks))].sort((a, b) =>
         a.localeCompare(b),
       ),
     [repos],
@@ -60,9 +60,9 @@ export default function RepoGrid({
 
     const filtered = repos.filter((r) => {
       if (activeTag && !r.tags.includes(activeTag)) return false;
-      if (framework && r.framework !== framework) return false;
+      if (framework && !r.frameworks.includes(framework)) return false;
       if (!q) return true;
-      return [r.fullName, r.description, r.note, r.language, r.framework, ...r.tags, ...r.topics]
+      return [r.fullName, r.description, r.note, r.language, ...r.frameworks, ...r.tags, ...r.topics]
         .filter((field): field is string => Boolean(field))
         .some((field) => field.toLowerCase().includes(q));
     });

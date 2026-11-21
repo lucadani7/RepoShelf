@@ -74,9 +74,11 @@ export default function RepoCard({ repo, activeTag, onTagClick }: Props) {
       )}
 
       <footer className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-6 text-xs text-muted">
-        {repo.framework && (
-          <span className="rounded-full bg-accent/10 px-2.5 py-1 font-medium text-accent">{repo.framework}</span>
-        )}
+        {repo.frameworks.map((name) => (
+          <span key={name} className="rounded-full bg-accent/10 px-2.5 py-1 font-medium text-accent">
+            {name}
+          </span>
+        ))}
         {repo.language && (
           <span className="flex items-center gap-1.5">
             <span

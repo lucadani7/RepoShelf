@@ -72,7 +72,7 @@ export default function ThemeToggle() {
       onClick={cycle}
       aria-label={LABELS[shown]}
       title={LABELS[shown]}
-      className="flex h-8 w-8 items-center justify-center rounded-full transition hover:bg-ink/[0.06] hover:text-ink"
+      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink-2 transition hover:bg-ink/[0.07] hover:text-ink"
     >
       <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden="true">
         {shown === "light" && (

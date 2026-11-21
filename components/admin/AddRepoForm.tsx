@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { addRepo, type ActionResult } from "@/app/actions";
+import FrameworkPicker from "./FrameworkPicker";
 
 const inputClass =
   "w-full rounded-xl bg-canvas px-4 py-3 text-[15px] text-ink placeholder:text-faint transition focus:bg-surface focus:ring-2 focus:ring-accent/40 focus:outline-none";
@@ -28,20 +29,14 @@ export default function AddRepoForm() {
         />
       </label>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <label className="block">
-          <span className="mb-1 block text-sm font-medium text-ink">
-            Framework <span className="font-normal text-faint">(optional)</span>
-          </span>
-          <input name="framework" placeholder="Next.js" className={inputClass} autoComplete="off" />
-        </label>
-        <label className="block">
-          <span className="mb-1 block text-sm font-medium text-ink">
-            Tags <span className="font-normal text-faint">(optional, comma-separated)</span>
-          </span>
-          <input name="tags" placeholder="web, react" className={inputClass} autoComplete="off" />
-        </label>
-      </div>
+      <FrameworkPicker />
+
+      <label className="block">
+        <span className="mb-1 block text-sm font-medium text-ink">
+          Tags <span className="font-normal text-faint">(optional, comma-separated)</span>
+        </span>
+        <input name="tags" placeholder="web, react" className={inputClass} autoComplete="off" />
+      </label>
 
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-ink">

@@ -2,6 +2,7 @@ import { desc } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { db } from "@/db";
 import { repo } from "@/db/schema";
+import { parseLegacyFrameworks } from "./frameworks";
 import type { Repo } from "./types";
 
 /** Cache tag for everything that shows the list of repos. */
@@ -27,7 +28,8 @@ export async function getRepos(): Promise<Repo[]> {
     name: r.name,
     url: `https://github.com/${r.fullName}`,
     note: r.note,
-    framework: r.framework,
+    // Repos saved before multi-select only have the old text field: convert it on the fly
+    frameworks: r.frameworks.length > 0 ? r.frameworks : parseLegacyFrameworks(r.framework),
     tags: r.tags,
     featured: r.featured,
     description: r.description,

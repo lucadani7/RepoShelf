@@ -6,9 +6,10 @@ export type Repo = {
   name: string;
   url: string;
   note: string | null;
-  framework: string | null;
+  /** e.g. ["FastAPI", "Next.js"] */
+  frameworks: string[];
   tags: string[];
-  /** Picked by the owner for the big card on the home page */
+  /** Picked by the owner for "Highlights" on the home page */
   featured: boolean;
   description: string | null;
   homepage: string | null;

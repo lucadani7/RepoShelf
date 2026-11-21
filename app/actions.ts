@@ -5,6 +5,7 @@ import { updateTag } from "next/cache";
 import { db } from "@/db";
 import { repo } from "@/db/schema";
 import { fetchGitHubRepo, parseRepoInput, syncAllFromGitHub, syncRepoFromGitHub } from "@/lib/github";
+import { cleanFrameworks } from "@/lib/frameworks";
 import { REPOS_TAG } from "@/lib/repos";
 import { getAdmin } from "@/lib/session";
 
@@ -15,6 +16,11 @@ const NOT_ALLOWED: ActionResult = { ok: false, message: "Only the admin can do t
 function text(formData: FormData, key: string): string | null {
   const value = String(formData.get(key) ?? "").trim();
   return value || null;
+}
+
+/** The checked framework boxes, limited to the preset list */
+function pickedFrameworks(formData: FormData): string[] {
+  return cleanFrameworks(formData.getAll("frameworks").map(String));
 }
 
 function parseTags(raw: string | null): string[] {
@@ -51,7 +57,8 @@ export async function addRepo(_prev: ActionResult, formData: FormData): Promise<
     .values({
       ...result.data,
       note: text(formData, "note"),
-      framework: text(formData, "framework"),
+      frameworks: pickedFrameworks(formData),
+      framework: null, // retire the old free-text value
       tags: parseTags(text(formData, "tags")),
     })
     .onConflictDoNothing({ target: repo.fullName })
@@ -93,16 +100,15 @@ export async function updateRepo(_prev: ActionResult, formData: FormData): Promi
   const id = text(formData, "id");
   if (!id) return { ok: false, message: "Missing repo." };
 
+  // "Highlight on the home page" (stored in the `featured` column; several can be on)
   const featured = formData.get("featured") === "on";
-
-  // Only one repo can be featured: un-feature the others first
-  if (featured) await db.update(repo).set({ featured: false }).where(eq(repo.featured, true));
 
   const updated = await db
     .update(repo)
     .set({
       note: text(formData, "note"),
-      framework: text(formData, "framework"),
+      frameworks: pickedFrameworks(formData),
+      framework: null, // retire the old free-text value
       tags: parseTags(text(formData, "tags")),
       featured,
     })
